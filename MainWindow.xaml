@@ -1,0 +1,37 @@
+﻿<windows:StyledWindow x:Class="CodeCafeIRC.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:windows="clr-namespace:CodeCafeIRC.themes.Windows"
+        UseLayoutRounding="True"
+        DataContext="{Binding RelativeSource={RelativeSource Self}}"
+        Title="Code Cafe IRC" Height="280" Width="450"
+                      Closing="Window_Closing">
+
+    <Window.Resources>
+        <Style TargetType="{x:Type TabControl}" x:Key="TabControlStyle" BasedOn="{StaticResource {x:Type TabControl}}">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding ElementName=TabControl, Path=Items.Count}" Value="0">
+                    <Setter Property="BorderThickness" Value="0"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <TabControl Grid.Row="0" x:Name="TabControl"
+                ItemsSource="{Binding Path=TabItems}"
+                Style="{StaticResource TabControlStyle}"/>
+
+        <TextBox PreviewKeyDown="Command_OnPreviewKeyDown"
+                 Text="{Binding Path=ShadowText, Mode=OneWay}"
+                 GotFocus="Input_OnGotFocus"
+                 LostFocus="Input_OnLostFocus"
+                 Grid.Row="1"/>
+    </Grid>
+
+</windows:StyledWindow>
+

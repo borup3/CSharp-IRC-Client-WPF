@@ -1,0 +1,43 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    
+    <ResourceDictionary.MergedDictionaries>
+
+        <ResourceDictionary Source="/themes/Simple/SimpleSeparator.xaml" />
+        <ResourceDictionary Source="/themes/Simple/SimpleScrollViewer.xaml" />
+        <ResourceDictionary Source="/themes/Simple/SimpleButton.xaml" />
+        <ResourceDictionary Source="/themes/Simple/SimpleBorder.xaml" />
+        <ResourceDictionary Source="/themes/Simple/SimpleTabItem.xaml" />
+        <ResourceDictionary Source="/themes/Simple/SimpleTabControl.xaml" />
+        <ResourceDictionary Source="/themes/Simple/SimpleComboBox.xaml" />
+        <ResourceDictionary Source="/themes/Simple/SimpleComboBoxItem.xaml" />
+        <ResourceDictionary Source="/themes/Simple/SimpleListBox.xaml" />
+        <ResourceDictionary Source="/themes/Simple/SimpleProgressBar.xaml" />
+        <ResourceDictionary Source="/themes/Simple/SimpleListBoxItem.xaml" />
+        <ResourceDictionary Source="/themes/Simple/SimpleTextBox.xaml" />
+        <ResourceDictionary Source="/themes/Simple/SimpleRichTextBox.xaml" />
+        <ResourceDictionary Source="/themes/Simple/SimpleTreeView.xaml" />
+        <ResourceDictionary Source="/themes/Simple/SimpleMenu.xaml" />
+        <ResourceDictionary Source="/themes/Simple/SimpleMenuItem.xaml" />
+        <ResourceDictionary Source="/themes/Simple/SimpleLabel.xaml" />
+        <ResourceDictionary Source="/themes/Simple/SimpleContextMenu.xaml" />
+        <ResourceDictionary Source="/themes/Simple/SimpleCheckBox.xaml" />
+        <ResourceDictionary Source="/themes/Simple/SimpleGroupBox.xaml" />
+        <ResourceDictionary Source="/themes/Simple/SimpleListView.xaml" />
+        <ResourceDictionary Source="/themes/Simple/SimpleListViewItem.xaml" />
+        <ResourceDictionary Source="/themes/Simple/SimpleStyledWindow.xaml" />
+        <ResourceDictionary Source="/themes/Simple/SimpleToggleButton.xaml" />
+        <ResourceDictionary Source="/themes/Simple/SimpleTextBlock.xaml" />
+        <ResourceDictionary Source="/themes/Simple/SimpleTreeViewItem.xaml" />
+        <ResourceDictionary Source="/themes/Simple/SimpleUserControl.xaml" />
+        <ResourceDictionary Source="/themes/Simple/SimplePasswordBox.xaml" />
+        <ResourceDictionary Source="/themes/Simple/SimpleToolTip.xaml" />
+        <ResourceDictionary Source="/themes/Simple/SimpleRadioButton.xaml" />
+        <ResourceDictionary Source="/themes/Simple/SimpleSlider.xaml" />
+        <ResourceDictionary Source="/themes/Simple/SimpleHyperlink.xaml" />
+        <ResourceDictionary Source="/themes/Simple/SimpleToolBar.xaml" />
+        <ResourceDictionary Source="/themes/Simple/SimpleDataGrid.xaml" />
+        
+    </ResourceDictionary.MergedDictionaries>
+    
+</ResourceDictionary>
