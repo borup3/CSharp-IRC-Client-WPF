@@ -266,7 +266,7 @@ namespace CodeCafeIRC.irc
                 bool found = false;
                 foreach(IrcChannel channel in Channels)
                 {
-                    if (message.Command == "PRIVMSG" || message.Parameters.Any(p => p == channel.ChannelName))
+                    if (message.Command == "PRIVMSG" || channel.UserNames.Any(message.Prefix.StartsWith) || message.Parameters.Any(p => p == channel.ChannelName))
                     {
                         channel.OnMessageReceived(message);
                         found = true;
