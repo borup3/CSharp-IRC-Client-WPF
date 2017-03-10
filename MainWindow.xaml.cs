@@ -54,6 +54,14 @@ namespace CodeCafeIRC
             // Init tab control
             AddMainTab();
             TabControl.SelectionChanged += Tab_Selected;
+
+            // Auto-join option?
+            string autojoin;
+            if (General.TryGetOption("autojoin", out autojoin))
+            {
+                // todo: run multiple commands in a single string... or something similar
+                General.ParseInput(autojoin);
+            }
         }
 
         /// <summary>

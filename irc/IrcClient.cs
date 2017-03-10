@@ -350,9 +350,9 @@ namespace CodeCafeIRC.irc
                         MainWindow.Instance.SendCurrent(new SystemMessage("Nickname " + message.Parameters[0] + " is already in use in this channel."));
                         // Change nickname
                         int index = channel.UserNames.IndexOf(channel.Credentials.ChosenName);
-                        channel.UserNames.RemoveAt(index);
+                        if(index > -1) channel.UserNames.RemoveAt(index);
                         channel.Credentials.ChosenName = message.Parameters[0] + "1";
-                        channel.UserNames.Insert(index, channel.Credentials.ChosenName);
+                        channel.UserNames.Insert(Math.Max(0, index), channel.Credentials.ChosenName);
                         Send(IrcCommands.Nickname(channel.Credentials.ChosenName));
                         return true;
                     }

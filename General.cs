@@ -11,13 +11,65 @@ namespace CodeCafeIRC
     public static class General
     {
         private static IDictionary<string, string> _setCommands = new Dictionary<string, string>();
+        private static IDictionary<string, string> _availableOptions = new Dictionary<string, string>() { { "autojoin", "" } };
+        private static IDictionary<string, string> _overriddenOptions = new Dictionary<string, string>();
 
         static General()
         {
             LoadCommands();
+            LoadOptions();
         }
 
-        public static void LoadCommands()
+        public static bool TryGetOption(string _option, out string _value)
+        {
+            return _overriddenOptions.TryGetValue(_option, out _value);
+        }
+
+        private static void LoadOptions()
+        {
+            try
+            {
+                string dir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Code Cafe IRC");
+                if (!Directory.Exists(dir)) return;
+                string file = Path.Combine(dir, "options.txt");
+                if (!File.Exists(file)) return;
+                using (StreamReader sr = new StreamReader(file))
+                {
+                    string line;
+                    while ((line = sr.ReadLine()) != null)
+                    {
+                        string[] split = line.Split(new[] { ":::" }, StringSplitOptions.None);
+                        _overriddenOptions[split[0]] = Encoding.UTF8.GetString(Convert.FromBase64String(split[1]));
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                MainWindow.Instance.SendCurrent(new ErrorMessage("Failed to load options: " + e.Message));
+            }
+        }
+
+        private static void SaveOptions()
+        {
+            try
+            {
+                string dir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Code Cafe IRC");
+                if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
+                using (StreamWriter sw = new StreamWriter(Path.Combine(dir, "options.txt")))
+                {
+                    foreach (var pair in _overriddenOptions)
+                    {
+                        sw.WriteLine(pair.Key + ":::" + Convert.ToBase64String(Encoding.UTF8.GetBytes(pair.Value)));
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                MainWindow.Instance.SendCurrent(new ErrorMessage("Failed to save commands: " + e.Message));
+            }
+        }
+
+        private static void LoadCommands()
         {
             try
             {
@@ -25,7 +77,7 @@ namespace CodeCafeIRC
                 if (!Directory.Exists(dir)) return;
                 string file = Path.Combine(dir, "cmds.priv");
                 if (!File.Exists(file)) return;
-                using (StreamReader sr = new StreamReader(Path.Combine(dir, "cmds.priv")))
+                using (StreamReader sr = new StreamReader(file))
                 {
                     string line;
                     while ((line = sr.ReadLine()) != null)
@@ -43,7 +95,7 @@ namespace CodeCafeIRC
             }
         }
 
-        public static void SaveCommands()
+        private static void SaveCommands()
         {
             try
             {
@@ -80,6 +132,10 @@ namespace CodeCafeIRC
                 {
                     case "/set":
                         DoSet(command);
+                        break;
+
+                    case "/option":
+                        DoOption(command);
                         break;
 
                     case "/join":
@@ -163,6 +219,30 @@ namespace CodeCafeIRC
             SaveCommands();
         }
 
+        private static void DoOption(string split)
+        {
+            split = split.Trim();
+            split = split.Remove(0, "/option ".Length);
+            string option = split.Substring(0, split.IndexOf(' '));
+            split = split.Remove(0, option.Length + 1);
+            string value = split.Trim('"');
+
+            if (split.Length < 3)
+            {
+                Error.Write("/option <option> \"string\"");
+                return;
+            }
+
+            if (_overriddenOptions.ContainsKey(option))
+            {
+                // Overwriting
+                MainWindow.Instance.SendCurrent(new SystemMessage(string.Format("Overwriting existing option '{0}'", option)));
+            }
+
+            _overriddenOptions[option] = value;
+            SaveOptions();
+        }
+
         private static void DoPM(string[] split)
         {
             if (split.Length < 3)
@@ -222,12 +302,18 @@ namespace CodeCafeIRC
             MainWindow.Instance.SendCurrent(new SystemMessage("> /nick <nickname>"));
             MainWindow.Instance.SendCurrent(new SystemMessage("> /pm <username> <message>"));
             MainWindow.Instance.SendCurrent(new SystemMessage("> /set <command> \"string\""));
+            MainWindow.Instance.SendCurrent(new SystemMessage("> /option <option> \"string\""));
+
+            MainWindow.Instance.SendCurrent(new SystemMessage("Options:"));
+            foreach (var option in _availableOptions)
+            {
+                string str = _overriddenOptions.ContainsKey(option.Key) ? option.Key + " = " + _overriddenOptions[option.Key] : option.Key;
+                MainWindow.Instance.SendCurrent(new SystemMessage("> " + str));
+            }
 
             MainWindow.Instance.SendCurrent(new SystemMessage("Custom commands:"));
             foreach (var cmd in _setCommands)
-            {
                 MainWindow.Instance.SendCurrent(new SystemMessage("> /" + cmd.Key));
-            }
         }
 
         private static void DoLeave(string[] args)
