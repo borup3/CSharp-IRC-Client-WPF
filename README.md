@@ -9,6 +9,10 @@ post here: http://thecode.cafe/foss/csharp-irc-client-wpf.
 I use this IRC client on a daily basis so I'm aware of its shortcomings and if they're not fixed then it's simply because I don't care.
 It's open-source so feel free to do it yourself and submit a pull request.
 
+## Download
+
+You can download the last built binary here: http://thecode.cafe/download/CodeCafe_IRC.exe. It may not be up-to-date with the code (in which case you should compile it yourself).
+
 ## Information
 
 This IRC client is written in C# on Microsoft's fairly annoying but comprehensive WPF gui framework.
