@@ -340,23 +340,30 @@ namespace CodeCafeIRC
             string password = args.Length == 5 ? args[4] : "";
             UserCredentials credentials = new UserCredentials(username, password);
 
-            IrcClient client = MainWindow.Instance.Clients.FirstOrDefault(c => c.Channels != null && c.Server == server && c.Channels.Any(chn => chn.Credentials.ChosenName == username));
-            if (client == null)
+            try
             {
-                client = new IrcClient(server, 6667);
-                client.OnClosing += () =>
+                IrcClient client = MainWindow.Instance.Clients.FirstOrDefault(c => c.Channels != null && c.Server == server && c.Channels.Any(chn => chn.Credentials.ChosenName == username));
+                if (client == null)
                 {
-                    MainWindow.Instance.Clients.Remove(client);
-                };
-                client.Connect(credentials);
-                client.Join(channel);
-                MainWindow.Instance.Clients.Add(client);
+                    client = new IrcClient(server, 6667);
+                    client.OnClosing += () =>
+                    {
+                        MainWindow.Instance.Clients.Remove(client);
+                    };
+                    client.Connect(credentials);
+                    client.Join(channel);
+                    MainWindow.Instance.Clients.Add(client);
+                }
+                else
+                {
+                    if (client.Channels.Any(c => c.ChannelName == channel))
+                        MainWindow.Instance.SendCurrent(new StateMessage("You are already in " + channel + "."));
+                    else client.Join(channel);
+                }
             }
-            else
+            catch (Exception e)
             {
-                if (client.Channels.Any(c => c.ChannelName == channel))
-                    MainWindow.Instance.SendCurrent(new StateMessage("You are already in " + channel + "."));
-                else client.Join(channel);
+                MainWindow.Instance.SendCurrent(new ErrorMessage("Failed to connect to server: " + e.Message));
             }
         }
 
