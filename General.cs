@@ -11,21 +11,21 @@ namespace CodeCafeIRC
     public static class General
     {
         private static IDictionary<string, string> _setCommands = new Dictionary<string, string>();
-        private static IDictionary<string, string> _availableOptions = new Dictionary<string, string>() { { "autojoin", "" } };
-        private static IDictionary<string, string> _overriddenOptions = new Dictionary<string, string>();
 
-        static General()
+        private static IDictionary<string, string> _availableOptions = new Dictionary<string, string>
         {
-            LoadCommands();
-            LoadOptions();
-        }
-
+            {"autojoin", ""},
+            { "startupX", ""}, {"startupY", ""}, {"startupW", ""}, {"startupH", ""},
+            {"alwaystop", "" }
+        };
+        private static IDictionary<string, string> _overriddenOptions = new Dictionary<string, string>();
+        
         public static bool TryGetOption(string _option, out string _value)
         {
             return _overriddenOptions.TryGetValue(_option, out _value);
         }
 
-        private static void LoadOptions()
+        public static void LoadOptions()
         {
             try
             {
@@ -69,7 +69,7 @@ namespace CodeCafeIRC
             }
         }
 
-        private static void LoadCommands()
+        public static void LoadCommands()
         {
             try
             {
@@ -185,6 +185,15 @@ namespace CodeCafeIRC
             }
         }
 
+        /// <summary>
+        /// Set the value of an option and save the option to disk.
+        /// </summary>
+        public static void SetOption(string option, string value, bool save)
+        {
+            _overriddenOptions[option] = value;
+            if(save) SaveOptions();
+        }
+
         private static bool TryCustomCommand(string _command)
         {
             if (!_command.StartsWith("/")) return false;
@@ -239,8 +248,7 @@ namespace CodeCafeIRC
                 MainWindow.Instance.SendCurrent(new SystemMessage(string.Format("Overwriting existing option '{0}'", option)));
             }
 
-            _overriddenOptions[option] = value;
-            SaveOptions();
+            SetOption(option, value, true);
         }
 
         private static void DoPM(string[] split)

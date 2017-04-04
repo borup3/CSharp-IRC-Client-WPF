@@ -5,7 +5,15 @@
         UseLayoutRounding="True"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
         Title="Code Cafe IRC" Height="280" Width="450"
-                      Closing="Window_Closing">
+        Closing="Window_Closing"
+        Deactivated="Window_Deactivated"
+        Activated="Window_OnActivated">
+    
+    <Window.ContextMenu>
+        <ContextMenu>
+            <MenuItem x:Name="MenuItem_AlwaysOnTop" Header="Always On Top" Click="ToggleAlwaysOnTop" IsCheckable="True" IsChecked="False"/>
+        </ContextMenu>
+    </Window.ContextMenu>
 
     <Window.Resources>
         <Style TargetType="{x:Type TabControl}" x:Key="TabControlStyle" BasedOn="{StaticResource {x:Type TabControl}}">
@@ -27,6 +35,7 @@
                 Style="{StaticResource TabControlStyle}"/>
 
         <TextBox PreviewKeyDown="Command_OnPreviewKeyDown"
+                 x:Name="InputField"
                  Text="{Binding Path=ShadowText, Mode=OneWay}"
                  GotFocus="Input_OnGotFocus"
                  LostFocus="Input_OnLostFocus"

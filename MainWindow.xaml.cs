@@ -2,16 +2,21 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Input;
 using CodeCafeIRC.irc;
 using CodeCafeIRC.messaging;
 using CodeCafeIRC.themes;
 using CodeCafeIRC.themes.Theme;
 using CodeCafeIRC.ui;
+using Binding = System.Windows.Data.Binding;
+using KeyEventArgs = System.Windows.Input.KeyEventArgs;
+using Message = CodeCafeIRC.messaging.Message;
+using TextBox = System.Windows.Controls.TextBox;
 
 //
 //  Code Cafe IRC client, source available at https://github.com/borup3/CSharp-IRC-Client-WPF
@@ -35,6 +40,7 @@ namespace CodeCafeIRC
         public ObservableCollection<TabItem> TabItems { get; private set; }
         public List<IrcClient> Clients { get; private set; }
         private readonly ChatBox m_main = new ChatBox();
+        private bool _windowActive;
 
         public IrcChannel CurrentChannel { get; private set; }
 
@@ -42,6 +48,10 @@ namespace CodeCafeIRC
 
         public MainWindow()
         {
+            // Force invariant culture
+            Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
+            Thread.CurrentThread.CurrentUICulture = CultureInfo.InvariantCulture;
+
             TabItems = new ObservableCollection<TabItem>();
             InitializeComponent();
             ThemeManager.SetColorScheme(new OriginalColorScheme());
@@ -55,12 +65,43 @@ namespace CodeCafeIRC
             AddMainTab();
             TabControl.SelectionChanged += Tab_Selected;
 
+            // Load options & commands
+            General.LoadOptions();
+            General.LoadCommands();
+
+            // Now apply options
+            ApplyOptions();
+        }
+
+        private void ApplyOptions()
+        {
+            // Startup position
+            string sx, sy, sw, sh;
+            double x, y, w, h;
+            if (General.TryGetOption("startupX", out sx) && General.TryGetOption("startupY", out sy) && General.TryGetOption("startupW", out sw) && General.TryGetOption("startupH", out sh)
+                && double.TryParse(sx, out x) && double.TryParse(sy, out y) && double.TryParse(sw, out w) && double.TryParse(sh, out h))
+            {
+                WindowStartupLocation = WindowStartupLocation.Manual;
+                Left = x;
+                Top = y;
+                Width = w;
+                Height = h;
+            }
+
             // Auto-join option?
             string autojoin;
             if (General.TryGetOption("autojoin", out autojoin))
             {
                 // todo: run multiple commands in a single string... or something similar
                 General.ParseInput(autojoin);
+            }
+
+            string salwaystop;
+            bool alwaystop;
+            if (General.TryGetOption("alwaystop", out salwaystop) && bool.TryParse(salwaystop, out alwaystop) && alwaystop)
+            {
+                MenuItem_AlwaysOnTop.IsChecked = true;
+                Topmost = true;
             }
         }
 
@@ -152,6 +193,7 @@ namespace CodeCafeIRC
 
         private void Input_OnGotFocus(object sender, RoutedEventArgs e)
         {
+            e.Handled = true;
             TextBox input = (TextBox)sender;
             if (input != null && input.Text == ShadowText)
                 input.Text = string.Empty;
@@ -164,8 +206,58 @@ namespace CodeCafeIRC
                 input.Text = ShadowText;
         }
 
+        private void ToggleAlwaysOnTop(object _sender, RoutedEventArgs _e)
+        {
+            bool newValue = true;
+            
+            // Flip current value
+            string salwaystop;
+            bool alwaystop;
+            if (General.TryGetOption("alwaystop", out salwaystop) && bool.TryParse(salwaystop, out alwaystop))
+                newValue = !alwaystop;
+
+            // Set new value
+            General.SetOption("alwaystop", newValue.ToString(), true);
+
+            Topmost = newValue;
+        }
+
+        private void Window_OnActivated(object _sender, EventArgs _e)
+        {
+            if (!_windowActive)
+            {
+                Timer t = null;
+                t = new Timer(delegate
+                {
+                    // On UI thread...
+                    Dispatcher.Invoke(() => InputField.Focus());
+                    t.Dispose();
+                }, null, 1, Timeout.Infinite);
+                _windowActive = true;
+            }
+        }
+        
+
+        private void Window_Deactivated(object _sender, EventArgs _e)
+        {
+            _windowActive = false;
+
+            string salwaystop;
+            bool alwaystop;
+            if (General.TryGetOption("alwaystop", out salwaystop) && bool.TryParse(salwaystop, out alwaystop) && alwaystop)
+            {
+                Activate();
+            }
+        }
+
         private void Window_Closing(object sender, CancelEventArgs e)
         {
+            // Save position
+            General.SetOption("startupX", Left.ToString(), false);
+            General.SetOption("startupY", Top.ToString(), false);
+            General.SetOption("startupW", Width.ToString(), false);
+            General.SetOption("startupH", Height.ToString(), true);
+
             foreach (IrcClient client in Clients.ToList())
             {
                 foreach (IrcChannel channel in client.Channels.ToList())
