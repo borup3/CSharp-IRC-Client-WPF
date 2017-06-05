@@ -252,6 +252,8 @@ namespace CodeCafeIRC
 
         private void Window_Closing(object sender, CancelEventArgs e)
         {
+            Sounds.Free();
+
             // Save position
             General.SetOption("startupX", Left.ToString(), false);
             General.SetOption("startupY", Top.ToString(), false);

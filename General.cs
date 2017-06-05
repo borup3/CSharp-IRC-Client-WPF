@@ -16,9 +16,14 @@ namespace CodeCafeIRC
         {
             {"autojoin", ""},
             { "startupX", ""}, {"startupY", ""}, {"startupW", ""}, {"startupH", ""},
-            {"alwaystop", "" }
+            {"alwaystop", "" },
+            {"notification_wav_path_relative", "" }
         };
-        private static IDictionary<string, string> _overriddenOptions = new Dictionary<string, string>();
+
+        private static IDictionary<string, string> _overriddenOptions = new Dictionary<string, string>
+        {
+            {"notification_wav_path_relative", "sounds/bamboo.wav" }
+        };
         
         public static bool TryGetOption(string _option, out string _value)
         {
@@ -279,7 +284,6 @@ namespace CodeCafeIRC
             {
                 MainWindow.Instance.CurrentChannel.Credentials.ChosenName = split[1];
                 MainWindow.Instance.CurrentChannel.Client.Send(IrcCommands.Nickname(split[1]));
-                MainWindow.Instance.SendCurrent(new StateMessage("Changed nickname to " + split[1] + "."));
             }
         }
 

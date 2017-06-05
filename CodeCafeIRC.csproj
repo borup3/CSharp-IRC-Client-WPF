@@ -87,6 +87,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Sounds.cs" />
     <Compile Include="themes\ThemeManager.cs" />
     <Compile Include="themes\Theme\ColorScheme.cs" />
     <Compile Include="themes\Theme\OriginalColorScheme.cs" />
@@ -282,7 +283,11 @@
   <ItemGroup>
     <Resource Include="icon_program.ico" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="sounds\bamboo.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

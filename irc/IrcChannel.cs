@@ -242,11 +242,11 @@ namespace CodeCafeIRC.irc
                         break;
 
                     case "NICK":
-                        UserNames.Remove(Credentials.ChosenName); // Remove old
-                        Credentials.ChosenName = message.Parameters[0];
-                        UserNames.Add(Credentials.ChosenName); // Add new
+                        string user = message.Prefix.Substring(0, message.Prefix.IndexOf("!"));
+                        UserNames.Remove(user);                 // Remove old
+                        UserNames.Add(message.Parameters[0]);   // Add new
                         ThemeManager.AddUserColor(message.Parameters[0]);
-                        _chat.AddMessage(new ServerMessage("Your nickname is now " + Credentials.ChosenName + "."));
+                        _chat.AddMessage(new ServerMessage(user + " changed name to " + message.Parameters[0] + "."));
                         break;
 
                     case "PRIVMSG":
@@ -257,10 +257,12 @@ namespace CodeCafeIRC.irc
                         {
                             // Public channel message
                             UserMessage userMessage = new UserMessage(sender, sender, content);
-                            if (content.Contains(_credentials.ChosenName))
+                            if (content.ToLower().Contains(_credentials.ChosenName.ToLower()))
                             {
                                 // User mentioned you
                                 userMessage.ContentFormat.Foreground = "LiveChat Mentioned You";
+                                userMessage.ContentFormat.FontWeight = FontWeight.FromOpenTypeWeight(600);
+                                Sounds.Play(eSound.Mentioned);
 
                                 if (_allowNotification)
                                 {
@@ -273,8 +275,11 @@ namespace CodeCafeIRC.irc
                             _chat.AddMessage(userMessage);
                         }
                         else
+                        {
                             // Private message
                             _chat.AddMessage(new PrivateMessage(sender, "You", content));
+                            Sounds.Play(eSound.Mentioned);
+                        }
                         break;
                 }
             }

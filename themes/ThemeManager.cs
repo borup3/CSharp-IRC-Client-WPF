@@ -51,7 +51,7 @@ namespace CodeCafeIRC.themes
             dictionary["LiveChat Channel Message"] = new SolidColorBrush(Color.FromRgb(127, 195, 225));
             dictionary["LiveChat System Message"] = new SolidColorBrush(Color.FromRgb(210, 210, 210));
             dictionary["LiveChat Error Message"] = new SolidColorBrush(Color.FromRgb(210, 55, 55));
-            dictionary["LiveChat Mentioned You"] = new SolidColorBrush(Color.FromRgb(55, 165, 55));
+            dictionary["LiveChat Mentioned You"] = new SolidColorBrush(colorScheme.ControlFontNormal);
 
             Application.Current.Resources.MergedDictionaries.RemoveAt(0);
             Application.Current.Resources.MergedDictionaries.Insert(0, dictionary);
