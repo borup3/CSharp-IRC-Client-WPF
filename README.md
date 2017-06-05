@@ -11,7 +11,8 @@ It's open-source so feel free to do it yourself and submit a pull request.
 
 ## Download
 
-You can download the last built binary here: http://thecode.cafe/download/CodeCafe_IRC.exe. It may not be up-to-date with the code (in which case you should compile it yourself).
+You can download the binary here: http://thecode.cafe/download/CodeCafe_IRC.zip. It may not be up-to-date with the code (in which case you should compile it yourself).
+Last build: June 6, 2017
 
 ## Information
 
