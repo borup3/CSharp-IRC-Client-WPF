@@ -238,7 +238,7 @@ namespace CodeCafeIRC.irc
                     case "QUIT":
                         string quitter = message.Prefix.Substring(0, message.Prefix.IndexOf("!"));
                         UserNames.Remove(quitter); // Remove user
-                        _chat.AddMessage(new StateMessage(quitter + " has quit (" + message.Parameters.Last() + ")"));
+                        _chat.AddMessage(new StateMessage(quitter + " has quit (" + (message.Parameters.Count > 0 ? message.Parameters.Last() : "no quit message") + ")"));
                         break;
 
                     case "NICK":
