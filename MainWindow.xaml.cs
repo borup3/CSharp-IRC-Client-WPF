@@ -178,6 +178,7 @@ namespace CodeCafeIRC
                 return;
             }
             CurrentChannel = ((TabItem)TabControl.SelectedItem).Tag as IrcChannel;
+            CurrentChannel?.Chat.TextBox.ScrollToEnd();
         }
 
         private void Command_OnPreviewKeyDown(object sender, KeyEventArgs e)
