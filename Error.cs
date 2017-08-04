@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using CodeCafeIRC.irc;
+using CodeCafeIRC.messaging;
 
 namespace CodeCafeIRC
 {
@@ -7,12 +8,12 @@ namespace CodeCafeIRC
     {
         public static void Write(string error)
         {
-            // todo: implement
+            MainWindow.Instance.Main.AddMessage(new ErrorMessage(error));
         }
 
         public static void LogFromThread(IrcClient ircClient, ErrorEventArgs errorEventArgs)
         {
-            // todo: implement
+            MainWindow.Instance.Main.AddMessage(new ErrorMessage(errorEventArgs.GetException().Message));
         }
     }
 }

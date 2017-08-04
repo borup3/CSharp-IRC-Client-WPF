@@ -39,7 +39,7 @@ namespace CodeCafeIRC
 
         public ObservableCollection<TabItem> TabItems { get; private set; }
         public List<IrcClient> Clients { get; private set; }
-        private readonly ChatBox m_main = new ChatBox();
+        public readonly ChatBox Main = new ChatBox();
         private bool _windowActive;
 
         public IrcChannel CurrentChannel { get; private set; }
@@ -58,8 +58,8 @@ namespace CodeCafeIRC
             Instance = this;
             
             Clients = new List<IrcClient>();
-            m_main.AddMessage(new SystemMessage("Welcome to Code Cafe IRC, an open-source client. Source available at https://github.com/borup3/CSharp-IRC-Client-WPF."));
-            m_main.AddMessage(new SystemMessage("/help to see available commands."));
+            Main.AddMessage(new SystemMessage("Welcome to Code Cafe IRC, an open-source client. Source available at https://github.com/borup3/CSharp-IRC-Client-WPF."));
+            Main.AddMessage(new SystemMessage("/help to see available commands."));
 
             // Init tab control
             AddMainTab();
@@ -111,7 +111,7 @@ namespace CodeCafeIRC
         public void SendCurrent(Message message)
         {
             if (CurrentChannel != null) CurrentChannel.AddMessage(message);
-            else m_main.AddMessage(message);
+            else Main.AddMessage(message);
         }
 
         public void BroadcastMessage(IrcClient client, Message message)
@@ -129,7 +129,7 @@ namespace CodeCafeIRC
 
         public void AddChannel(IrcChannel channel)
         {
-            m_main.AddMessage(new StateMessage("Opened channel " + channel.ChannelName + "."));
+            Main.AddMessage(new StateMessage("Opened channel " + channel.ChannelName + "."));
 
             TabItem tabItem = new TabItem {DataContext = channel};
             tabItem.SetBinding(HeaderedContentControl.HeaderProperty, new Binding("ChannelName"));
@@ -153,7 +153,7 @@ namespace CodeCafeIRC
         public void LeaveChannel(IrcChannel channel)
         {
             // this unloads the tab, which closes the channel
-            m_main.AddMessage(new StateMessage("Left channel " + channel.ChannelName + "."));
+            Main.AddMessage(new StateMessage("Left channel " + channel.ChannelName + "."));
             TabItem found = TabControl.Items.Cast<TabItem>().FirstOrDefault(item => Equals(item.Tag, channel));
             if(found != null) TabItems.Remove(found);
         }
@@ -164,7 +164,7 @@ namespace CodeCafeIRC
             {
                 DataContext = this,
                 Header = "Main",
-                Content = m_main
+                Content = Main
             };
             TabItems.Add(tabItem);
             TabControl.SelectedItem = tabItem;

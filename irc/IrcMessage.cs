@@ -7,7 +7,7 @@ namespace CodeCafeIRC.irc
 {
     public class IrcMessage
     {
-        private const string PREFIX_PATTERN = @"([\w\d\.]+)|([^:\s]+(\s*(![^:]+)?@[^:]+)?)";
+        private const string PREFIX_PATTERN = @"([\w\d\.]+)|([^\s]+(\s*(![^:]+)?@[^:]+)?)";
         private const string COMMAND_PATTERN = @"([\w]+)|([\d]{3})";
         private const string NOSPCRLFCL = @"[^\r\n\s:]";
         private const string MIDDLE_PATTERN = "(" + NOSPCRLFCL + @"(:|" + NOSPCRLFCL + ")*)";

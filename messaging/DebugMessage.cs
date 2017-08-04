@@ -16,10 +16,10 @@ namespace CodeCafeIRC.messaging
             TimeStampFormat = FormattingRule.TimeStampRule;
 
             SenderFormat = new FormattingRule();
-            SenderFormat.FontWeight = FontWeights.Bold;
+            SenderFormat.FontWeight = FontWeights.Normal;
 
             ContentFormat = new FormattingRule();
-            ContentFormat.FontWeight = FontWeights.Bold;
+            ContentFormat.FontWeight = FontWeights.Normal;
         }
     }
 }

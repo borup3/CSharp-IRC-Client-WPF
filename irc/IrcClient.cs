@@ -125,8 +125,12 @@ namespace CodeCafeIRC.irc
 
                         if (message.IsReply)
                         {
-                            if (TryParseReply(message) || TrySkipReply(message))
+                            if (TryParseReply(message)) continue;
+                            if (TrySkipReply(message))
+                            {
+                                MainWindow.Instance.Main.AddMessage(new DebugMessage("Skipped: " + response));
                                 continue;
+                            }
                         }
                         else
                         {
@@ -151,10 +155,10 @@ namespace CodeCafeIRC.irc
                             }
                         }
 
-                        if (message.Parameters == null || SendMessageToChannel(message))
+                        if (message.Parameters != null && SendMessageToChannel(message))
                             continue;
 
-                        Debug.WriteLine("Skipped message: " + message.ToString());
+                        //MainWindow.Instance.Main.Channel.AddMessage(new DebugMessage("Skipped: " + response));
                     }
                 }
                 catch(Exception ex)
