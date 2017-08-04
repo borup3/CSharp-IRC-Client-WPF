@@ -31,7 +31,9 @@ namespace CodeCafeIRC.ui
             }
 
             Document.Blocks.Add(message.ToParagraph());
-            TextBox.ScrollToEnd();
+            // Only scroll to end to include new messages if already at the bottom
+            if(TextBox.ViewportHeight + TextBox.VerticalOffset >= TextBox.ExtentHeight)
+                TextBox.ScrollToEnd();
         }
 
         public void Clear()
